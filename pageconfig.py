@@ -6,34 +6,35 @@
 
 # The following vars can be changed to affect default values directly
 # inserted inside of the relevant HTML elements found on any page.
-TITLE = "Your Site Name"
-CURRENT_VERSION = "version 1.0"
-DEFAULT_BYLINE = "Hello World"
-CSS_FILE = "nightblue.css" # File should be kept in /css/ directory
+TITLE = "virufac.github.io"
+CURRENT_VERSION = "version 0.9"
+DEFAULT_BYLINE = "Grinding Hard on Level 3 Pythons"
+CSS_FILE = "random" # File should be kept in /css/ directory
 
 
 # Please use an absolute path in the following locations:
 # Which Should Be in the Same Root Folder for Your Page Gen:
 #   DIRECTORY:
-ROOT_PATH = "/home/asdf/Git/simpai-spg/"
+ROOT_PATH = "/home/virufac/Git/vfghio-gen/"
 
 
 #   DIRECTORY: for txt files, where you will write your posts
-TXT_PATH = "/home/asdf/Git/simpai-spg/posts/"
+TXT_PATH = "/home/virufac/Git/vfghio-gen/posts/"
 
 
 #   FILE: Your main .html Template:
-TEMPLATE_FILE = "/home/asdf/Git/simpai-spg/template.html"
+TEMPLATE_FILE = "/home/virufac/Git/vfghio-gen/template.html"
 
 
 #   FILE: The pickled shelve database (.db) containing your Post objects
-POSTS_DB = "/home/asdf/Git/simpai-spg/posts.db"
+POSTS_DB = "/home/virufac/Git/vfghio-gen/posts.db"
+POSTS_JSON = "/home/virufac/Git/vfghio-gen/posts.json"
 
 
 # You will need another folder where you website and everything
 # that will be uploaded will go:
 #   DIRECTORY: The root WWW folder
-SITE_PATH = "/home/asdf/Git/yoursite.github.io"
+SITE_PATH = "/home/virufac/Git/virufac.github.io"
 
 
 #   DIRECTORY: Relative path inside of SITE_PATH:
@@ -42,16 +43,16 @@ IMG_PATH = "/img/"
 
 
 #   DIRECTORY: This is where your HTML files go
-HTML_PATH = "/home/asdf/Git/yoursite.github.io/posts/"
+HTML_PATH = "/home/virufac/Git/virufac.github.io/posts/"
 
 
 #   FILE: Archive Template (.html)
-ARCHIVE_PATH = "/home/asdf/Git/yoursite.github.io/archive.html"
+ARCHIVE_PATH = "/home/virufac/Git/virufac.github.io/archive.html"
 
 
 # Your Main Website, including https://
     # URL: No trailing slash:
-SITE_URL = "https://yoursite.github.io"
+SITE_URL = "https://virufac.github.io"
 
 
 # These reflect command line commands for your software of choice
@@ -68,7 +69,7 @@ EDITOR = "vim"
 #        $LIKETHIS  --  Keep Them Somewhere in the Template Block
 
 TEMPLATE_RELEASENOTE = """
-<h5><div id="updates">Update and Release Notes</div></h5>
+<br><h5><div id="updates">Update and Release Notes</div></h5>
 <code class="html">
 <font family="PT+Sans+Narrow">
 <ul><li><b>$VERSION</b> -- <b>$TIMESTAMP</b>: <div class="byline">

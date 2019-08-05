@@ -1,4 +1,6 @@
-import os, sys, subprocess, shelve
+#!/usr/bin/env python3
+
+import os, sys, subprocess, shelve, random, json
 from datetime import datetime
 from string import Template
 import pageconfig as pc
@@ -18,6 +20,18 @@ class Page:
         self.date = date
         self.id_no = 'undefined'
         
+        self.post = {
+            'title' : self.title,
+            'byline' : self.byline,
+            'version' : self.version,
+            'css_path' : self.css_path,
+            'css_elem' : self.css_elem,
+            'html_path' : self.html_path,
+            'html_link' : self.html_link,
+            'date' : self.date,
+            'id_no' : self.id_no
+            }
+        
     def open_html(self):
         subprocess.run([pc.BROWSER, self.html_path])
 
@@ -25,7 +39,7 @@ class Page:
     # Assembles Dictionary of Changes For REPLACE_ELEMENT function
     def get_elementary_changes(self):
         changes = {'TITLEBAR': self.title,
-                   'CSS': get_css_element(),
+                   'CSS': get_css_element(get_css_file()),
                    'TITLEHEAD': self.title,
                    'VERSION': self.version,
                    'BYLINE': self.byline,
@@ -37,39 +51,51 @@ class Page:
     def make_optional_changes(self, changes, template):
         global paginate_last_page_switch
         paginate_last_page_switch = False
+        self.post['option_img'] = False
+        self.post['option_archive'] = False
+        self.post['option_releasenote'] = False
+        self.post['option_pagin'] = False
+
         for optional in changes:
             if optional == 'IMG':
+                self.post['option_img'] = True
                 while True:
-                    img_path = input("\nEnter Path to Image\n> ")
-                    if os.path.exists(pc.SITE_PATH + pc.IMG_PATH + img_path):
+                    self.img_path = input("\nEnter Path to Image\n> ")
+                    if os.path.exists(pc.SITE_PATH + pc.IMG_PATH + self.img_path):
                         break
-                img_path = pc.SITE_PATH + pc.IMG_PATH + img_path
-                template = replace_element(template, {'IMG_PATH':img_path})
+                self.img_path = pc.SITE_URL + pc.IMG_PATH + self.img_path
+                self.post['img_path'] = self.img_path
+                template = replace_element(template, {'IMG_PATH':self.img_path})
 
             if optional == 'ARCHIVE':
-                # Truncate archive.html
-                with open(pc.ARCHIVE_PATH, 'w') as fo:
+                l, d = get_posts(pc.POSTS_DB)
+                if len(l) >= 2:
+                    self.post['option_archive'] = True
+                    # Truncate archive.html
+                    with open(pc.ARCHIVE_PATH, 'w') as fo:
                         fo.write('')
-                # Instantiate New Archive Insert
-                arc = Archive(*get_page_params())
-                # Insert Archive into Page as Block
-                with open(pc.ARCHIVE_PATH) as fo:
-                    insert = fo.read()
-                    template = replace_element(template, {'ARCHIVE_PAGE':insert})
+                    # Instantiate New Archive Insert
+                    arc = Archive(*get_page_params())
+                    # Insert Archive into Page as Block
+                    with open(pc.ARCHIVE_PATH) as fo:
+                        insert = fo.read()
+                        template = replace_element(template, {'ARCHIVE_PAGE':insert})
 
             if optional == 'RELEASENOTE':
+                self.post['option_releasenote'] = True
+                self.releasenote = input("\nType a Release Note\n> ")
+                self.post['releasenote'] = self.releasenote
                 template = replace_element(template, {'VERSION': pc.CURRENT_VERSION,
                                                       'TIMESTAMP': get_date()[2],
-                                                      'RELEASEUPDATE':
-                                                input("\nType a Release Note\n > ")})
+                                                      'RELEASEUPDATE': self.releasenote})
 
             if optional == 'PAGINATION':
+                self.post['option_pagin'] = True
                 l, d = get_posts(pc.POSTS_DB)
                 # Get Previous Link From Last Page
-                if len(l) >= 2:
-                    prev_page = d[l[-2]]
-                    prev_link = d[l[-2]].html_link
-                    template = replace_element(template, {'PREV_LINK': prev_link,
+                if len(l) >= 2: 
+                    self.post['prev_link'] = d[l[-2]].html_link
+                    template = replace_element(template, {'PREV_LINK': self.post['prev_link'],
                                                           'PREV_NAME': 'PREVIOUS'})
                 else: # Remove placeholders if first page
                     template = replace_element(template, {'PREV_LINK': '',
@@ -77,6 +103,7 @@ class Page:
                 # Open Last Page and Insert Link to Current Page
                 if len(l) >= 2:
                     paginate_last_page_switch = True
+                
         return template
 
     # Get Count of Files in Directory
@@ -93,7 +120,6 @@ class Page:
             if not self.html_path in os.listdir():
                 with open(self.html_path, 'w') as fo:
                     fo.write(template)
-                    second_phase = False # reset
             else:
                 print("Page Exists. Cannot write file.")
             os.chdir(cwd)
@@ -133,6 +159,7 @@ class Post(Page):
     def __init__(self, title, byline, version, css_path, html_path, date):
         super().__init__(title, byline, version, css_path, html_path, date)
         self.id_no = self.get_id_no()
+        self.post['id_no'] = self.id_no
         cwd = os.getcwd()
         confirm = input("Write a new post? Y/n? ").lower()
         if confirm.startswith('y'):
@@ -169,6 +196,7 @@ class Post(Page):
             self.post_data = fo.readlines()
             # If the the Subtitle is Changed, Edit the Shelf
             self.subtitle = self.post_data[0][:-1]
+            self.post['subtitle'] = self.subtitle
             # Pretty Sure This Line isn't Necessary, But Will Check Later
             self.post_data = [line for line in self.post_data]
             self.post_data.pop(0) # These Pops Are
@@ -176,8 +204,10 @@ class Post(Page):
             self.post_data.pop(0) # The Heading
             # Then all the lines are joined into one String
             self.post_data = "".join(self.post_data)
+            self.post['post_data'] = self.post_data
             # The first 100 characters of the post are saved for archive preview
             self.post_head = self.post_data.split('\n')[0][:100]
+            self.post['post_head'] = self.post_head
 
     # The ID_NO is Used to Shelve and Pull Post Objects
     def get_id_no(self, path=pc.TXT_PATH):
@@ -206,10 +236,10 @@ def make_html_template(data):
     return t
 
 # Build CSS element
-def get_css_element():
+def get_css_element(css_file):
     head = '<link href="/css/'
     tail = '" rel="stylesheet" type="text/css" media="all">'
-    return head + pc.CSS_FILE + tail
+    return head + css_file + tail
 
 # Takes Template Object and Dictionary of Changes
 def replace_element(html, changes):
@@ -260,15 +290,50 @@ def get_posts(shelf_database=pc.POSTS_DB):
         posts_list.sort() # The List is In Order
         posts_list = [str(post) for post in posts_list]
         return posts_list, posts_dict
+
+def load_json(path=pc.POSTS_JSON):
+    while True:
+        if os.path.exists(path):
+            with open(path, 'r') as fo:
+                json_data = json.load(fo)
+                break
+        else:
+            posts = {'0' : None}
+            with open(path, 'w') as fo:
+                json.dump(posts, fo)
+    return json_data
+
+def dump_json(post_dict, json_data, path=pc.POSTS_JSON):
+    json_data[post_dict['id_no']] = post_dict
     
-def paginate_last_page():
-    l, d = get_posts(pc.POSTS_DB)
-    last_page = d[l[-2]]
-    # Used to get Links to Current Page for Last Page
-    next_link = d[l[-1]].html_link
+    if '0' in list(json_data.keys()):
+        del json_data['0']
+        
+    with open(path, 'w') as fo:
+        json.dump(json_data, fo, indent=2)
+    
+def paginate_last_page(po):
+    jdata = load_json()
+
+    for key in list(jdata.keys()):
+        try:
+            if jdata[key]['option_pagin'] == True:
+                next_link = jdata[str(int(key)+1)]['html_link']
+                print(next_link)
+                jdata[key]['next_link'] = next_link
+        except KeyError:
+            current_page = key
+            print(f'Current Page: {key}')
+            last_page_id = str(int(key) - 1)
+            print(f'Last Page: {last_page_id}')
+            
+    with open(pc.POSTS_JSON, 'w') as fo:
+        json.dump(jdata, fo, indent=2)
+
     # Opening Last Page
-    with open(last_page.html_path) as fo:
+    with open(jdata[last_page_id]['html_path']) as fo:
         template_lines = fo.readlines()
+        
     # Index Lines for Comment Removal of Next Page Nav Link
     template_lines = [(idx, elem) for idx, elem in enumerate(template_lines)]
     # Search and Replace by Index
@@ -276,18 +341,21 @@ def paginate_last_page():
         if line[1].startswith('<!--<a class="next"'):
             template_lines[line[0]] = (line[0], \
                 '<a class="next" href="$NEXT_LINK">$NEXT_NAME</a></nav>')
+            print("shit replaced")
+            
     # Write the lines to temporary file, without indexes
     template_lines = [line[1] for line in template_lines]
     with open("lastpage.html", 'w') as fo:
         for line in template_lines:
             fo.write(line+'\n')
+            
     # Send temp file back through process.
     data = get_html_file("lastpage.html")
     html = make_html_template(data)
-    html = replace_element(html, {'NEXT_LINK': next_link,
+    html = replace_element(html, {'NEXT_LINK': jdata[current_page]['html_link'],
                                   'NEXT_NAME': 'NEXT'})
-    print(html.template)
-    rebuild_page(last_page.html_path, html.template)
+
+    rebuild_page(jdata[last_page_id]['html_path'], html.template)
     paginate_last_page_switch = False
     return
 
@@ -307,6 +375,9 @@ def get_byline(byline=pc.DEFAULT_BYLINE):
 def get_version(version=pc.CURRENT_VERSION):
     return version
 def get_css_file(css=pc.CSS_FILE):
+    if css == 'random':
+        die_roll = random.randint(1, 360)
+        css = "color{}.css".format(die_roll)
     return css
 def get_html_path(path=pc.HTML_PATH):
     date = get_date()
@@ -328,7 +399,8 @@ def get_page_params():
     return (title, byline, version, css_file, html_path, date)
 
 # Complete Process for Building a New Post
-def write_new_post():
+def write_post():
+    jdata = load_json()
     p = Post(*get_page_params())
     p.open_txt()
     p.shelve_page()
@@ -341,11 +413,12 @@ def write_new_post():
     html = remove_placeholders(html, removed)
     html = p.make_optional_changes(list(changes2.keys()), html)
     p.build_page(html.template)
+    dump_json(p.post, jdata)
     if paginate_last_page_switch:
-        paginate_last_page()
+        paginate_last_page(p)
+    p.shelve_page()
     return html, changes, changes2, removed, p
 
-
 if __name__ == '__main__':
-    html, changes, changes2, removed, p = write_new_post()
+    html, changes, changes2, removed, p = write_post()
     
