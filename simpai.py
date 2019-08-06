@@ -1,48 +1,40 @@
 #!/usr/bin/env python3
 
-import os, sys, subprocess, shelve, random, json
+import os, sys, subprocess, random, json
 from datetime import datetime
 from string import Template
 import pageconfig as pc
 
+
 class Page:
     # Initializes Attributes That All Pages Have
     def __init__(self, title, byline, version, css_path, html_path, date):
-        self.title = title
-        self.byline = byline
-        self.version = version
-        self.css_path = css_path
-        css_head = '<link href="/css/'
-        css_tail = '" rel="stylesheet" type="text/css" media="all">'
-        self.css_elem = css_head + self.css_path + css_tail
-        self.html_path = html_path
-        self.html_link = pc.SITE_URL + "/" + self.html_path.split(os.sep)[-1]
-        self.date = date
-        self.id_no = 'undefined'
-        
-        self.post = {
-            'title' : self.title,
-            'byline' : self.byline,
-            'version' : self.version,
-            'css_path' : self.css_path,
-            'css_elem' : self.css_elem,
-            'html_path' : self.html_path,
-            'html_link' : self.html_link,
-            'date' : self.date,
-            'id_no' : self.id_no
-            }
+        self.post = dict()
+        self.post['title'] = title
+        self.post['byline'] = byline
+        self.post['version'] = version
+        self.post['css_path'] = css_path
+        self.post['css_elem'] = '<link href="/css/' + self.post['css_path'] \
+                                + '"rel="stylesheet" type="text/css" media="all">'        
+        self.post['html_path'] = html_path
+        self.post['html_link'] = os.path.join(pc.SITE_URL, \
+                                '/'.join(self.post['html_path'].split(os.sep)[-2:]))
+
+        self.post['date'] = date
+        self.post['id_no'] = 'undefined'
+
         
     def open_html(self):
-        subprocess.run([pc.BROWSER, self.html_path])
+        subprocess.run([pc.BROWSER, self.post['html_path']])
 
 
     # Assembles Dictionary of Changes For REPLACE_ELEMENT function
     def get_elementary_changes(self):
-        changes = {'TITLEBAR': self.title,
+        changes = {'TITLEBAR': self.post['title'],
                    'CSS': get_css_element(get_css_file()),
-                   'TITLEHEAD': self.title,
-                   'VERSION': self.version,
-                   'BYLINE': self.byline,
+                   'TITLEHEAD': self.post['title'],
+                   'VERSION': self.post['version'],
+                   'BYLINE': self.post['byline'],
                    'SUBTITLE': self.subtitle,
                    'POST': self.post_data}
         return changes
@@ -68,7 +60,7 @@ class Page:
                 template = replace_element(template, {'IMG_PATH':self.img_path})
 
             if optional == 'ARCHIVE':
-                l, d = get_posts(pc.POSTS_DB)
+                l, d = get_posts(pc.POSTS_JSON)
                 if len(l) >= 2:
                     self.post['option_archive'] = True
                     # Truncate archive.html
@@ -91,10 +83,10 @@ class Page:
 
             if optional == 'PAGINATION':
                 self.post['option_pagin'] = True
-                l, d = get_posts(pc.POSTS_DB)
+                l, d = get_posts(pc.POSTS_JSON)
                 # Get Previous Link From Last Page
                 if len(l) >= 2: 
-                    self.post['prev_link'] = d[l[-2]].html_link
+                    self.post['prev_link'] = d[l[-2]]['html_link']
                     template = replace_element(template, {'PREV_LINK': self.post['prev_link'],
                                                           'PREV_NAME': 'PREVIOUS'})
                 else: # Remove placeholders if first page
@@ -107,7 +99,7 @@ class Page:
         return template
 
     # Get Count of Files in Directory
-    def count_posts(self, posts_dir=pc.POSTS_DB):
+    def count_posts(self, posts_dir=pc.POSTS_JSON):
         pl, _ = get_posts(posts_dir)
         return len(pl)
 
@@ -117,8 +109,8 @@ class Page:
             cwd = os.getcwd()
             os.chdir(pc.HTML_PATH)
             # Second Phase is a Rebuild for Pagnation
-            if not self.html_path in os.listdir():
-                with open(self.html_path, 'w') as fo:
+            if not self.post['html_path'] in os.listdir():
+                with open(self.post['html_path'], 'w') as fo:
                     fo.write(template)
             else:
                 print("Page Exists. Cannot write file.")
@@ -127,6 +119,7 @@ class Page:
             print("Give Absolute Path in pageconfig.py for HTML_PATH and Make Sure is Directory")
             sys.exit(1)
         return
+
 
 class Archive(Page):
     # Initialize Archive Tempate Insert
@@ -140,26 +133,27 @@ class Archive(Page):
         for i in l: # For Each Post, Make an Archive Entry
             arc_html = make_html_template(pc.TEMPLATE_ENTRY)
             arc_html = replace_element(arc_html, \
-                dict([("ENTRYLINK", d[str(i)].html_link),
-                      ("ENTRYNAME", '-'.join(d[str(i)].subtitle.split(' ')).lower()),
-                      ("ENTRYDESC", d[str(i)].post_head),
-                      ("DATE", d[str(i)].date[2])]))
+                dict([("ENTRYLINK", d[str(i)]['html_link']),
+                      ("ENTRYNAME", '-'.join(d[str(i)]['subtitle'].split(' ')).lower()),
+                      ("ENTRYDESC", d[str(i)]['post_head']),
+                      ("DATE", d[str(i)]['date'][2])]))
             # Uses TMP File to Replace Elements with Same Placeholders for Each Post
             with open('archive.tmp', 'w') as temp_file:
                 temp_file.write(arc_html.template)
-            # Write the Archive Data to the DB for Rebuilding
-            with shelve.open(pc.POSTS_DB, writeback=True) as shelf:
-                shelf[str(i)].archive_entry = arc_html.template
-            # Add the TMP File to a Blank Archive Template in Append Mode
+            jdata = load_json()
+            self.post['archive_entry'] = arc_html.template
+            dump_json(self.post, jdata)
+            #Add the TMP File to a Blank Archive Template in Append Mode
             with open(pc.ARCHIVE_PATH, 'a') as fo:
                 fo.write(arc_html.template+"\n")
+
 
 class Post(Page):
     # Initialize a Regular Post in a TXT File
     def __init__(self, title, byline, version, css_path, html_path, date):
         super().__init__(title, byline, version, css_path, html_path, date)
-        self.id_no = self.get_id_no()
-        self.post['id_no'] = self.id_no
+        self.post['id_no'] = self.get_id_no()
+        self.post['id_no'] = self.post['id_no']
         cwd = os.getcwd()
         confirm = input("Write a new post? Y/n? ").lower()
         if confirm.startswith('y'):
@@ -168,14 +162,14 @@ class Post(Page):
                 os.chdir(pc.TXT_PATH)
                 self.subtitle = input("What is the title of this post?\n")
                 # If the TXT File Doesn't Already Exist, Name It by Date
-                if not os.path.exists(f"{pc.TXT_PATH}{self.date[0]}.txt"):
-                    self.txt_path = f"{pc.TXT_PATH}{self.date[0]}.txt"
+                if not os.path.exists(f"{pc.TXT_PATH}{self.post['date'][0]}.txt"):
+                    self.txt_path = f"{pc.TXT_PATH}{self.post['date'][0]}.txt"
                     with open(self.txt_path, 'w') as txt:
                         # Write the title and date of the post
                         txt.write(self.subtitle + "\n")
-                        txt.write(self.date[1] + "\n")
+                        txt.write(self.post['date'][1] + "\n")
                         # Draw a Separating Line Equal to the Length of Heading
-                        txt.write("#" * max(len(self.subtitle), len(self.date[1])+2))
+                        txt.write("#" * max(len(self.subtitle), len(self.post['date'][1])+2))
                         txt.write("\n")
                         os.chdir(cwd)
                         return
@@ -209,20 +203,15 @@ class Post(Page):
             self.post_head = self.post_data.split('\n')[0][:100]
             self.post['post_head'] = self.post_head
 
-    # The ID_NO is Used to Shelve and Pull Post Objects
+    # The ID_NO is Used to Store and Pull Post Objects
     def get_id_no(self, path=pc.TXT_PATH):
         # If ID Hasn't Been Saved...
-        if self.id_no == 'undefined':
+        if self.post['id_no'] == 'undefined':
             # ...Use the Number of TXT Files to Call It
             file_count = len(os.listdir(path))
             return str(file_count + 1)
         else: # Otherwise Return the ID
-            return str(self.id_no)
-
-    # With the ID Number, Store the Post Objects in the DB
-    def shelve_page(self):
-        with shelve.open(pc.POSTS_DB) as shelf:
-            shelf[self.id_no] = self
+            return str(self.post['id_no'])
 
 # Opens and HTML File and Returns One String
 def get_html_file(html_file=pc.TEMPLATE_FILE):
@@ -281,15 +270,10 @@ def remove_placeholders(html, removed):
     new_template = replace_element(html, changes)
     return new_template
 
-# Open the Shelf a List and Dict
-def get_posts(shelf_database=pc.POSTS_DB):
-    with shelve.open(shelf_database) as posts:
-        posts_dict = dict(posts)
-        posts_list = list(posts_dict.keys())
-        posts_list = [int(post) for post in posts_list]
-        posts_list.sort() # The List is In Order
-        posts_list = [str(post) for post in posts_list]
-        return posts_list, posts_dict
+#Open the JSON a List and Dict
+def get_posts(path=pc.POSTS_JSON):
+    jdata = load_json(path)
+    return list(jdata.keys()), jdata
 
 def load_json(path=pc.POSTS_JSON):
     while True:
@@ -403,7 +387,6 @@ def write_post():
     jdata = load_json()
     p = Post(*get_page_params())
     p.open_txt()
-    p.shelve_page()
     changes = p.get_elementary_changes()
     data = get_html_file()
     html = make_html_template(data)
@@ -414,9 +397,11 @@ def write_post():
     html = p.make_optional_changes(list(changes2.keys()), html)
     p.build_page(html.template)
     dump_json(p.post, jdata)
+    jdata = load_json()
     if paginate_last_page_switch:
         paginate_last_page(p)
-    p.shelve_page()
+    jdata = load_json()
+    dump_json(p.post, jdata)
     return html, changes, changes2, removed, p
 
 if __name__ == '__main__':
