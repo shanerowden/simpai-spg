@@ -4,6 +4,7 @@ import os
 import simpai
 import pageconfig as pc
 import subprocess
+import shutil
 
 if os.path.isdir(pc.HTML_PATH):
     print('')
@@ -116,10 +117,16 @@ if os.path.isdir(pc.HTML_PATH):
             template_lines = [(idx, elem) for idx, elem in enumerate(template_lines)]
             
             for line in template_lines:
+                if line[1] == '<a class="next" href=""></a>':
+                    template_lines[line[0]] = (line[0], '')
+                if line[1] == '<a class="prev" href=""></a>':
+                    template_lines[line[0]] = (line[0], '')
+                if line[1] == '</nav>-->':
+                    template_lines[line[0]] = (line[0], '</nav>')
                 if line[1] == '<a class="next" href=""></a></nav>':
-                    template_lines[line[0]] = (line[0], '')
-                if line[1] == '<nav><a class="prev" href=""></a>':
-                    template_lines[line[0]] = (line[0], '')
+                    template_lines[line[0]] = (line[0], '</nav>')
+                    print("removed")
+                    
                     
             template_lines = [line[1] for line in template_lines]
             
@@ -131,6 +138,12 @@ if os.path.isdir(pc.HTML_PATH):
         
 else:
     print("pageconfig file needs HTML_PATH to website's posts directory")
+    
+
+index = jdata[last_post]['html_path']
+os.chdir(pc.SITE_PATH)
+shutil.copy(index, 'index.html')
+
                 
                 
                 

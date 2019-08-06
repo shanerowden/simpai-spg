@@ -208,10 +208,11 @@ class Post(Page):
         # If ID Hasn't Been Saved...
         if self.post['id_no'] == 'undefined':
             # ...Use the Number of TXT Files to Call It
-            file_count = len(os.listdir(path))
-            return str(file_count + 1)
+            jdata = load_json()
+            file_count = len(jdata.keys())
+            return str(file_count)
         else: # Otherwise Return the ID
-            return str(self.post['id_no'])
+            return str(list(jdata.keys())[-1])
 
 # Opens and HTML File and Returns One String
 def get_html_file(html_file=pc.TEMPLATE_FILE):

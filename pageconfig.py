@@ -26,8 +26,7 @@ TXT_PATH = "/home/virufac/Git/vfghio-gen/posts/"
 TEMPLATE_FILE = "/home/virufac/Git/vfghio-gen/template.html"
 
 
-#   FILE: The pickled shelve database (.db) containing your Post objects
-POSTS_DB = "/home/virufac/Git/vfghio-gen/posts.db"
+#   FILE: The json database (.json) containing your post data
 POSTS_JSON = "/home/virufac/Git/vfghio-gen/posts.json"
 
 
@@ -47,7 +46,7 @@ HTML_PATH = "/home/virufac/Git/virufac.github.io/posts/"
 
 
 #   FILE: Archive Template (.html)
-ARCHIVE_PATH = "/home/virufac/Git/virufac.github.io/archive.html"
+ARCHIVE_PATH = "/home/virufac/Git/vfghio-gen/archive.html"
 
 
 # Your Main Website, including https://
@@ -96,6 +95,8 @@ TEMPLATE_IMG = """
 """
 
 TEMPLATE_PAGINATION = """
-<nav><a class="prev" href="$PREV_LINK">$PREV_NAME</a>
-<!--<a class="next" href="$NEXT_LINK">$NEXT_NAME</a></nav>-->
+<nav>
+<a class="prev" href="$PREV_LINK">$PREV_NAME</a>
+<!--<a class="next" href="$NEXT_LINK">$NEXT_NAME</a>
+</nav>-->
 """
