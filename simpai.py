@@ -153,7 +153,6 @@ class Post(Page):
     def __init__(self, title, byline, version, css_path, html_path, date):
         super().__init__(title, byline, version, css_path, html_path, date)
         self.post['id_no'] = self.get_id_no()
-        self.post['id_no'] = self.post['id_no']
         cwd = os.getcwd()
         confirm = input("Write a new post? Y/n? ").lower()
         if confirm.startswith('y'):
@@ -204,13 +203,14 @@ class Post(Page):
             self.post['post_head'] = self.post_head
 
     # The ID_NO is Used to Store and Pull Post Objects
-    def get_id_no(self, path=pc.TXT_PATH):
+    def get_id_no(self):
         # If ID Hasn't Been Saved...
         if self.post['id_no'] == 'undefined':
             # ...Use the Number of TXT Files to Call It
             jdata = load_json()
             file_count = len(jdata.keys())
-            return str(file_count)
+            next_id = file_count + 1
+            return str(next_id)
         else: # Otherwise Return the ID
             return str(list(jdata.keys())[-1])
 
