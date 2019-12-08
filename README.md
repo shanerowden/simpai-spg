@@ -13,7 +13,7 @@ Features in the new version that the old didn't have:
 
 I also plan to add a scss compiler, a spellchecker, and some other things.
 
-Ultimately, it will be as feature rich as any other static page generator I've looked at when I'm done with it. At first it will be specifically crafted for `./themes/virulence.factor/` theme: which is a fork of [serenity.scss](https://hale.su/serenity.html) by Lexi Hale and is the theme I use on [my abandoned github page](virufac.github.io), which maybe will not go abandoned when the finished version is out.
+Ultimately, it will be as feature rich as any other static page generator I've looked at when I'm done with it. At first it will be specifically crafted for `./themes/virulence.factor/` theme: which is a fork of [serenity.scss](https://hale.su/serenity.html) by Lexi Hale and is the theme I use on [my abandoned github page](https://virufac.github.io), which maybe will not go abandoned when the finished version is out.
 
 ### INSTALLATION
 
