@@ -1,3 +1,0 @@
-import simpai
-
-print('test')
