@@ -1,0 +1,3 @@
+import simpai
+
+print('test')

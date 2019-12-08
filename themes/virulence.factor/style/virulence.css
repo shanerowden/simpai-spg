@@ -1,0 +1,847 @@
+@charset "UTF-8";
+
+/* ---------------------------------------------------------------------
+ * [ʞ] serenity.scss <https://hale.su/serenity.html>
+ *  ~ lexi hale <lexi@hale.su>
+ *  © GNU affero general public license 3.0
+ *    ....
+-------------------------------------------------------------------------
+ * [vF] simpai-spg <https://github.com/virufac/simpai-spg>
+ *     was developed using serenity.scss as the basis of the 
+ *   default page's stylesheet. Where selectors are added by me, I have 
+ *  noted in comments; where things have been removed, I merely clarify
+ * that this may have been done to some degree.
+ *                                                    -- viruFac
+ *                                                        @protonmail.com
+ *  ©© GNU affero public license 3.0
+ *      https://github.com/virufac/simpai-spg/blob/master/LICENSE
+-------------------------------------------------------------------------*/
+
+
+ /* [vF] fonts removed and added */
+@import url('https://fonts.googleapis.com/css?family=Audiowide');
+@import url('https://fonts.googleapis.com/css?family=Baumans');
+@import url('https://fonts.googleapis.com/css?family=Kanit');
+
+/* [vF] also work of [ʞ]; saved from her html <style> elements */
+/*@import url('https://virufac.github.io/css/serenity_codeblock.css'); */
+
+
+  /* [vF] 
+    I will be adding [ʞ] to this doc for the /
+  sake of clarity after so many edits by me */
+
+  
+  
+  
+  
+/* everything until noted otherwise is [ʞ] */
+:root {
+  --hue: 273;
+  --width: 100%;
+  --bright: 12%;
+  --link-br: 73%;
+  --hover: 22%;
+  --fn-one: 'Audiowide'; /* [vF] This one is for artistic looking text */
+  --fn-two: 'Baumans'; /* This one is the heading stuff */
+  --fn-three: 'Kanit'; /* This one is more plain text */
+  
+}
+
+::selection {
+  background-color: hsl(var(--hue), 67%, 69%);
+  color: white;
+}
+
+body {
+  margin-top: 1em;
+  padding: 0 1em;
+  font-family: var(--fn-two), cursive;
+  font-size: 14pt;
+  hanging-punctuation: first last force-end;
+  text-align: justify;
+}
+
+
+
+
+
+/* browser specific hacks */
+@media print {
+  body {
+    --faint-color: #666;
+    color: black;
+  }
+}
+
+@media screen {
+  body {
+    --fg-color: hsl(var(--hue),100%,89%);
+    --bg-color: hsl(var(--hue),84%,var(--bright));
+    --faint-color: hsl(var(--hue),64%,64%);
+    max-width: var(--width);
+    margin: 0 auto;
+    margin-top: 1em;
+    background: var(--bg-color);
+    color: var(--fg-color);
+  }
+}
+body::-webkit-scrollbar {
+  width: 1.3em;
+}
+body::-webkit-scrollbar-track {
+  background: hsl(var(--hue), 96%, 8%);
+}
+body::-webkit-scrollbar-thumb {
+  background: hsl(var(--hue), 100%, 21%);
+}
+body::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--hue), 100%, 28%);
+}
+
+
+
+
+
+h1, h2, h3, h4, h5, h6 {
+  all: unset;
+  display: block;
+  line-height: 1em;
+  margin-top: 0.3em;
+}
+@media screen {
+  h1 a[href], h2 a[href], h3 a[href], h4 a[href], h5 a[href], h6 a[href] {
+    text-decoration: none;
+/*     color: hsl(var(--hue), 60%, 80%); */
+  }
+  h1 a[href]:hover, h2 a[href]:hover, h3 a[href]:hover, 
+  h4 a[href]:hover, h5 a[href]:hover, h6 a[href]:hover {
+    color: var(--fg-color);
+  }
+}
+
+h1 {
+  font-size: 35pt;
+  text-align: left;
+}
+
+/* [vF] fixes appearance of title on phones */
+@media screen and (max-width: 650px) {
+    h1 {
+        font-size: 25pt;
+    }
+}
+
+h2 {
+  font-size: 1.4em;  /* [vF] edited */
+}
+
+h3 {
+  font-size: 1.3333333333em;
+  color: var(--faint-color);
+}
+
+h4 {
+  font-size: 1.25em;
+}
+
+h5 {
+  font-size: 1.2em;
+}
+
+
+
+
+
+/* [vF] this is my heading id */
+h2#directory-heading {
+    display: block;
+    margin-bottom: 0.2em;
+    margin-top: 0.4em;
+    margin-left: 1.2em; 
+    margin-bottom: -0.4em;
+    margin-right: 3.3em;
+    font-weight: none;
+    text-align: left;
+    padding-left: -2em;
+    padding-top: 1em;
+    max-width: 80%;
+}
+
+/* [vF] this is my heading id */
+h2.secondary-content {
+    display: block;
+    margin-bottom: 0.2em;
+    margin-top: 0.4em;
+    margin-left: 1.2em; 
+    margin-bottom: -0.4em;
+    margin-right: 3.3em;
+    font-weight: none;
+    text-align: left;
+    padding-left: -2em;
+    padding-top: 1em;
+    max-width: 80%;
+}
+
+
+/* [vF] this is what adjusts the opverlap with the authorbox on small screens */
+@media screen and (max-width: 500px) {
+    h2.directory-heading {
+        margin-bottom: unset;
+        margin-top: unset;
+        font-size: 14pt;
+    }
+}
+
+
+
+
+/* [ʞ]  */
+@media screen {
+  /* dim the pathbar */
+  h1 a[href], h3 a[href] {
+    color: hsl(var(--hue), 50%, 70%);
+  }
+}
+
+
+
+
+
+p {
+    font-family: var(--fn-two);
+    color: var(--fg-color);
+    text-indent: 2.0em;
+    line-height: 1.4em;
+    padding-left: 2em;
+    padding-right: 2em;
+}
+
+/* [vF] my classes */
+p.quips {
+    font-family: var(--fn-three);
+    color: var(--faint-color);
+    padding-left: 0.8em;
+    padding-right: -2em;
+    line-height: 1.7em;
+    text-align: center;
+    text-indent: 0em;
+}
+
+p.footer {
+    padding-left: 2em;
+    padding-right: 2em;
+    text-indent: 0em;
+    text-align: justify;
+}
+
+@media print {
+  a[href] {
+    color: black;
+  }
+}
+@media screen {
+  a[href] {
+    /* define the numbers */
+    --link-t: var(--hue), 100%, var(--link-br);
+    --hi-t: var(--hue), 100%, calc(var(--link-br) + var(--hover));
+    /* define the two alpha variants */
+    --link-c: hsl(var(--link-t));
+    --ul-c: hsla(var(--link-t), 30%);
+    --hi-c: hsl(var(--hi-t));
+    --ul-hi-c: hsla(var(--hi-t), 60%);
+    color: var(--link-c);
+    text-decoration-color: var(--ul-c);
+    text-decoration-width: 1px;
+    text-underline-offset: 2px;
+  }
+  a[href]:focus {
+    color: var(--bg-color);
+    background: var(--fg-color);
+    box-shadow: 0 0 30px var(--ul-c);
+    text-decoration: none;
+        /* padding: 0.2em 0.3em; commented out by [vF] */
+            /* [ʞ] the extra padding will disrupt layout sometimes; let's
+            * avoid that where we can */
+    margin: 0 -0.3em;
+    outline: none;
+  }
+  a[href]:hover, a[href]:active {
+    color: var(--hi-c);
+    text-decoration: underline;
+    text-decoration-color: var(--ul-hi-c);
+    text-shadow: 0px 0px 30px var(--link-c);
+    background: none !important;
+    box-shadow: none;
+  }
+}
+
+
+
+/* [vF] from here forward everything is going to be mine except where noted */
+a.archive-link {
+    font-family: var(--fn-one);
+}
+
+a.menu-link {
+    text-decoration: none;
+}
+
+a.dir-parent {
+    font-family: var(--fn-one);
+}
+
+a.no-dec {
+    text-decoration: none;
+}
+
+
+
+
+/* [ʞ] */
+div.dir > div {
+  /* for div-type directory lists */
+  margin-left: 2em;
+  text-indent: -2em;
+}
+div.dir > div > *:first-child {
+  font-weight: bold;
+}
+
+ /* [vF] everything having to do with the overhead menubar is mine */
+div.menubar {
+  width: 100%;
+}
+div#menu-content {
+    font-family: var(--fn-one);
+    margin: 0 auto;
+    margin-left: 2em;
+    width: 94%;
+    text-align: right;
+    font-size: 14px;
+}
+
+div.content {
+    width: 35em;
+    text-align: justify;
+    margin: 0 auto;
+}
+
+div.footer {
+    width: 80%; 
+    margin: 1em auto; 
+    border: 4px; 
+    border-radius: 4px; 
+    border-color: var(--faint-color);
+    padding: 1em;
+}
+
+@media screen and (min-width: 1080px) {
+    div#menu-content {
+        font-size: 20px;
+        margin-right: 25%;
+    }
+}
+
+@media screen and (max-width: 800px) {
+    div#menu-content {
+        width: 90%;
+        text-align: left;
+        font-size: 10px;
+    }
+    div.content {
+        width: 100%;
+        text-align: justify;
+        margin: 0 auto;
+    }
+    
+}
+
+@media screen and (max-width: 700px) {
+div#caption {
+    padding-top: 0.3em;
+    border: dotted;
+    border-color: var(--fg-color);
+    border-width: 2px;
+    padding-left: 0.5em;
+	}
+}
+
+span.directory-heading-title {
+    font-size: 70%;
+}
+
+span.writing-page-date {
+    font-size: 12px;
+}
+
+span.faint-color {
+    color: var(--faint-color);
+}
+
+span.font-18px {
+    font-size: 18px;
+}
+
+span.root-directory-entry {
+    font-family: var(--fn-three); 
+    color: var(--faint-color);
+    text-align: justify;
+}
+
+span.reduce-font {
+    font-size: 12px;
+    color: white;)
+}
+
+span.root-directory-entry-descrip {
+    color: var(--fg-color);
+}
+
+span.https {
+    font-size: 35%; 
+    color: var(--faint-color);
+}
+
+span.slash-slash {
+    font-size: 55%; 
+    font-weight: bold;"
+}
+
+span#root-directory-heading {
+    font-size: 18px;
+}
+
+span.font-16px {
+    font-size: 16px;
+}
+
+@media screen and (min-width: 1000px) {
+div#refer {
+	display: block;
+	text-align:right;
+	font-size: 55%;
+	margin-top: 0.4em;
+	margin-left: 2.3em;
+	text-decoration: none;
+	text-decoration-color: var(--faint-color);
+/* 	max-width: 90%; */
+	line-height: 2em;
+	}
+}
+
+span#disappear {
+	display: inline;
+}
+
+@media screen and (max-width: 400px) {
+	div#refer {
+		display: none;
+	}
+	
+	span#disappear {
+		display: none;
+	}
+}
+
+
+/* originally [ʞ] did this selector, 
+ * most classes and edits are very 
+ * different from hers and are [vF] 
+ * there is one notable exception,
+ * which is at the end of this file */
+code {
+  margin-right: 1.5em;
+  margin-top: -0.5;
+}
+
+/* [vF] untiled noted */
+code.menu {
+    display: block;
+    width: 100%;
+    margin-left: -4em;
+    margin-right: -1em;
+    margin-top: -1.1em;
+    margin-bottom: 1.1em;
+    line-height: -1.5em;
+    text-shadow: none;
+    border-radius: 10px;
+    border: hsl(var(--hue),90%,4%);
+/*    padding: 10em;*/
+    padding-top: -0.3em;
+    padding-bottom: -0.8em;
+    color: --tag-color: hsl(var(--hue),30%,70%);
+    background-color: hsl(var(--hue),40%,10%);
+    border: dotted;
+    border-color: var(--fg-color);
+    border-width: 2px;
+} 
+
+code.footer {
+    display: block;
+    width: 100%;
+    line-height: -1.5em;
+    text-shadow: none;
+    border-radius: 10px;
+    border: hsl(var(--hue),90%,4%);
+    padding: 0.5em;
+    padding-top: -0.3em;
+    padding-bottom: -0.8em;
+    color: --tag-color: hsl(var(--hue),30%,70%);
+    background-color: hsl(var(--hue),40%,10%);
+    border: dotted;
+    border-color: var(--fg-color);
+    border-width: 2px;
+    font-family: var(--fn-two); 
+    font-size: 14px;
+} 
+
+
+@media screen and (max-width: 700px) {
+	code.menu {
+		padding-bottom: 0.2em;
+		padding-top: 0.2em;
+
+		
+	}
+}
+@media screen and (max-width: 250px) {
+	code.menu {
+		display: none;
+	}
+}
+
+/* [vF] remove this when every page that was wrongly using an id is using a class. */
+code#authorbox {
+    display: block;
+    line-height: 2.5em; 
+    max-width: 90%; 
+    margin-left: 3.4em;
+    margin-right: 4em;
+    margin-bottom: -1em;
+    padding-top: -1.5em;
+    font-size: 9px;
+    background-color: hsl(var(--hue),90%,4%);
+    border-radius: 10px;
+    text-shadow: none;
+    --tag-color: hsl(var(--hue),30%,70%);
+    border: dotted;
+    border-color: var(--bg-color);
+    border-width: 2px;
+    text-align: right;
+
+}
+
+code.authorbox {
+    display: block;
+    line-height: 2.5em; 
+    max-width: 90%; 
+    text-align: right;
+    margin-left: 3.4em;
+    margin-right: 4em;
+    margin-bottom: -1em;
+    padding-top: -1.5em;
+    font-size: 9px;
+    text-align: right;
+    background-color: hsl(var(--hue),90%,4%);
+    border-radius: 10px;
+    text-shadow: none;
+    --tag-color: hsl(var(--hue),30%,70%);
+    border: dotted;
+    border-color: var(--bg-color);
+    border-width: 2px;
+    
+}
+
+
+blockquote.archived-post {
+    display: block;
+    margin-top: -0.5em;
+    font-family: var(--fn-two);
+}
+
+@media screen and (max-width: 600px) {
+    blockquote.archived-post {
+        display: none;
+    }
+}
+
+
+
+
+
+/* ol, ul, and li selectors are completely [ʞ] /
+ * and her design, but I have added, removed, edited... 
+ * Commented out lines are the removed lines -- mostly */
+ol, ul {
+  padding-left: 1.2em;
+  list-style: none;
+  line-height: 1.2em;
+  font-family: var(--fn-three); /* [vF] */
+  text-align: left;
+}
+
+/* [vF] I broke the next two up from one selector */
+ol li {
+  margin-bottom: 0.4em;
+  margin-right: 0.7em;
+}
+ul li {
+  margin-bottom: 0.4em;
+  margin-left: 0.9em;
+}
+ol li::before, ul li::before {
+  display: inline;
+  color: hsl(var(--hue), 40%, 60%);
+}
+ol.dir > li, ul.dir > li {
+  margin-left: 2em;
+/*   max-width: 90%; */
+}
+ol.dir > li::before, ul.dir > li::before {
+  margin-left: -2em;
+}
+ol.dir > li > *:first-child, ul.dir > li > *:first-child {
+  font-weight: bold;
+}
+
+ol > li::before {
+  hanging-punctuation: none;
+/*   content: "»"; */
+  content: "🗀";
+  width: 1.5em;
+/*  margin-left: -0.5em;
+  margin-right: 0.5em;*/
+  color: var(--fg-color);
+/*  border: dotted;
+  border-width: 3px;
+  border-color: hsl(var(--hue),50%,50%);
+  border-radius: 30px;*/
+  font-size: 30px;
+/*   padding-left: 0.5em; */
+}
+
+/* [vF] I added this based on `ol > li::before` */
+ul > li::before {
+  hanging-punctuation: none;
+/*   content: "»"; */
+  content: "🖿";
+  width: 1.5em;
+  margin-left: -0.5em;
+  margin-right: 0.5em;
+  color: var(--fg-color);
+  border: inset;
+  border-width: 2px;
+  border-color: hsl(var(--hue),50%,50%);
+  border-radius: 20px;
+  font-size: 18px;
+/*   padding-left: 0.5em; */
+}
+
+ol {
+  counter-reset: li;
+}
+ol li::before {
+  counter-increment: li;
+  content: counter(li);
+  width: 1.5em;
+  margin-left: -0.5em;
+  text-align: right;
+/*  border-style: inset;
+  border-width: 3px;
+  border-color: hsl(var(--hue),40%,50%);
+  border-radius: 5px;*/
+  font-size: 30px;
+  font-weight: bold;
+  color: hsl(var(--hue),40%,50%);
+/*   padding-right: 0.5em; */
+}
+
+/* [vF] */
+ul.further-reading > li::before {
+  hanging-punctuation: none;
+/*   content: "»"; */
+  content: "🔗";
+  width: 1.5em;
+  margin-left: -0.5em;
+  margin-right: 0.5em;
+  color: var(--fg-color);
+  border: none;
+  font-size: 14px;
+/*   line-height: 2em; */
+/*   padding-left: 0.5em; */
+}
+
+ul.notice-icon > li::before {
+  hanging-punctuation: none;
+  content: "";  
+  width: 1.5em;
+  margin-left: -0.5em; 
+  margin-right: 0.5em; 
+  color: var(--fg-color);
+  border: none;
+  font-size: 14px;
+/*   line-height: 3em; */
+}
+
+/* more [ʞ] until noted */
+.byline {
+  margin-left: 1.5em;
+  margin-top: -0.5;
+  padding: 0em;
+  font-style: italic;
+  color: var(--faint-color);
+  padding-right: 2em;
+  text-align: right;
+}
+
+hr {
+  border: none;
+  border-bottom: 2px dashed hsl(var(--hue), 50%, 30%);
+  width: 90%;
+}
+
+hr[data-dec]::before {
+  display: block;
+  content: attr(data-dec);
+  position: relative;
+  letter-spacing: 1em;
+  text-align: center;
+  top: 0.8em;
+  color: hsl(var(--hue), 50%, 40%);
+  font-size: 60%;
+}
+hr[data-dec=""]::before {
+/*   content: "»"; */
+  content: "🗁";
+}
+
+hr.short {
+	width: 70%;
+	border-bottom: 1px solid hsl(var(--hue),90%,4%);
+	margin: -0.5em auto;
+	
+}
+
+/* [vF] edited heavily by me 
+ * originally work of [ʞ] */
+.imgbox {
+    display:block;
+    margin:1.5em;
+    line-height: 1.6em;
+    font-size: 55%;
+    text-align: left;
+    background-color: hsl(var(--hue),90%,4%);
+    padding-bottom: 0.5em;
+    padding: 1em;
+    border-radius: 5px;
+    text-shadow: none;
+    color: #FFFFFF;
+    --tag-color: hsl(var(--hue),40%,10%);
+    border: dashed;
+    border-color: var(--bg-color);
+    border-width: 2px;
+}
+
+
+
+
+/* pagination 
+ * (called nav by [ʞ]) 
+ * is entirely [ʞ] */
+nav {
+  padding-bottom: 1em;
+}
+
+@media print {
+  nav {
+    display: none;
+  }
+}
+
+nav::after {
+  display: table;
+  content: "";
+  clear: both;
+}
+nav a[href] {
+  --fg-color: hsl(var(--hue), 100%, 80%);
+  display: block;
+  color: var(--fg-color);
+  background-color: hsl(var(--hue), 100%, calc(var(--bright) / 2));
+  border: 1px solid var(--fg-color);
+  text-decoration: none;
+  transition-property: border-color, text-shadow, color, --fg-color;
+  transition-duration: 0.2s;
+}
+
+/* back and forward buttons */
+nav a[href]:hover {
+  border-color: var(--hi-color);
+  --fg-color: var(--hi-color);
+}
+nav a[href].next::after, nav a[href].prev::before {
+  display: inline-block;
+  color: var(--bg-color);
+/*   font-weight: bold; */
+  background-color: var(--fg-color);
+  padding: 1.7ex 1.5ex;
+  text-shadow: none;
+  transition-property: background-color, --fg-color;
+  transition-duration: 0.2s;
+}
+nav a[href].next {
+  float: right;
+  padding-left: 2ex;
+  border-radius: 0 0 0 10px;
+}
+nav a[href].next::after {
+  margin-left: 2ex;
+/*  content: "◆";*/
+  content: "🢣";
+}
+nav a[href].prev {
+  float: left;
+  padding-right: 2ex;
+  border-radius: 0 0 10px 0;
+}
+nav a[href].prev::before {
+  margin-right: 2ex;
+/*   content: "◆"; */
+  content: "🢢";
+}
+
+
+/* html codeblock directly from ʞ.cc, credit to [ʞ]
+ * this code is not included by default in serenity.scss */
+code.html {
+    display:block;
+    margin:0.5em;
+    line-height: 1.6em;
+    font-size: 55%;
+    text-align: left;
+    background-color: hsl(var(--hue),90%,4%);
+    padding: 1em;
+    border-radius: 5px;
+    text-shadow: none;
+    --tag-color: hsl(var(--hue),30%,70%);
+}
+code.html *[data-block] { margin-left: 1em; }
+code.html *[data-tag]::before {
+    color: var(--tag-color);
+    content: "<" attr(data-tag) ">";
+}
+code.html *[data-args]::before {
+    content: "<" attr(data-tag) " " attr(data-args) ">";
+}
+code.html *[data-tag]::after {
+    color: var(--tag-color);
+    content: "</" attr(data-tag) ">";
+}
+code.html *:empty::after { content: ""; }
+
+code.html *[data-block]::before,
+code.html *[data-block]::after
+    { margin-left: -1em; display:block; }
+    
+/* [vF] endnote mechanism removed */
