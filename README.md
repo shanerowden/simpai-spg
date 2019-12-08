@@ -1,4 +1,4 @@
-# Senpai Static Page Generator
+# Simpai Static Page Generator
 
 Simpai is the simple Python static page generator. and it has noticed your need for a hand crafted, statically generated mark up -- but without the tedium of manual maintenance. With Simpai, you will write your HTML template once, format it to be read by Simpai, and it will take care of every page afterwards that you will ever need.
 
